@@ -4,19 +4,28 @@ const ProductModel = require('../models/productModel');
 const { scrapeProductData } = require('../scraper/amazonScraper');
 
  // Handle scraping and inserting product
-const scrapeAndInsertProduct = async (req, res) => {
+ const scrapeAndInsertProduct = async (req, res) => {
     try {
         const asin = req.body.asin; // Expect ASIN from request body
         const productData = await scrapeProductData(asin); // Scrape product details
 
+        // Log the scraped product data to verify its structure
+        console.log('Scraped Product Data:', productData);
+
+        // Check if required fields are present
+        if (!productData.title) {
+            throw new Error("Product title is missing");
+        }
+
         const insertedData = await ProductModel.insertProduct(productData); // Insert data into Supabase
         res.status(200).json({ message: 'Product inserted successfully', data: insertedData });
-        console.log('product added successfylly:',insertedData)
+        console.log('Product added successfully:', insertedData);
     } catch (error) {
         res.status(500).json({ message: error.message });
-        console.log(error.message)
+        console.log(error);
     }
 };
+
 
 // Handle fetching all products
 const getAllProducts = async (req, res) => {

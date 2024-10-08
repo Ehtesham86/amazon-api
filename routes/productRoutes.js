@@ -6,8 +6,7 @@
 
     const router = express.Router();
     router.post('/get-product', getProductByIdOrAsin);
-
-    // POST route to scrape and insert product
+     // POST route to scrape and insert product
     router.post('/scrape-product', scrapeAndInsertProduct);
 
     // GET route to fetch all products
