@@ -20,11 +20,17 @@ const { scrapeProductData } = require('../scraper/amazonScraper');
         const insertedData = await ProductModel.insertProduct(productData); // Insert data into Supabase
         res.status(200).json({ message: 'Product inserted successfully', data: insertedData });
         console.log('Product added successfully:', insertedData);
-    } catch (error) {
-        res.status(500).json({ message: error });
-        res.status(5000).json({error});
-
-        console.log(error);
+    }catch (error) {
+        // Send a structured error response
+        const errorResponse = {
+            message: error.message, // Provide the error message
+            // Optionally include stack trace if needed (remove in production for security)
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
+            // Include any other relevant error information here
+        };
+        
+        res.status(500).json({ error: errorResponse }); // Send the error response
+        console.error(error); // Log the full error for server-side debugging
     }
 };
 
