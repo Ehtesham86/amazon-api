@@ -1,7 +1,7 @@
 // /scraper/amazonScraper.js
 
 const chromium = require('chrome-aws-lambda');
-const puppeteer = require('puppeteer-core');
+const puppeteer = require('puppeteer');
 
 // Function to scrape product data
 const scrapeProductData = async (asin) => {
