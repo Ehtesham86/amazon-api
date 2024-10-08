@@ -1,9 +1,15 @@
 const { createClient } = require('@supabase/supabase-js');
-
+ 
 // Initialize Supabase client
 const supabaseUrl = process.env.SUPABASE_URL; // Supabase URL from .env
 const supabaseKey = process.env.SUPABASE_KEY; // Supabase Key from .env
-const supabase = createClient(supabaseUrl, supabaseKey);
+// const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = createClient(supabaseUrl, supabaseKey, {
+    headers: {
+      'X-Client-Info': 'supabase-js-node/2.45.4',
+    }
+  });
+  
 
 const ProductModel = {
     // Function to insert a product
