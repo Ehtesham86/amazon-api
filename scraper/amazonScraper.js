@@ -1,17 +1,15 @@
 // /scraper/amazonScraper.js
-
-const puppeteer = require('puppeteer');
+const chromium = require('chrome-aws-lambda');
+const puppeteer = require('puppeteer-core');
 
 // Function to scrape product data
 const scrapeProductData = async (asin) => {
+    const executablePath = await chromium.executablePath; // Get path for chrome-aws-lambda
     const browser = await puppeteer.launch({
-        headless: false, // Set to false to see browser interactions
-        defaultViewport: null, // Makes the viewport full-screen (helps with certain site behaviors)
-        args: [
-            '--no-sandbox', 
-            '--disable-setuid-sandbox',
-            '--disable-dev-shm-usage', // Helps prevent crashes from large memory usage
-        ]
+        executablePath,
+        headless: true, // Set to true for headless mode (serverless env)
+        args: chromium.args, // Use chrome-aws-lambda args
+        defaultViewport: chromium.defaultViewport, // Use the default viewport for serverless environments
     });
     
     const page = await browser.newPage();
