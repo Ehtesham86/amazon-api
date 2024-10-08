@@ -28,8 +28,15 @@ const { scrapeProductData } = require('../scraper/amazonScraper');
             stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
             // Include any other relevant error information here
         };
-        
+        const errorResponse1 = {
+            message: error, // Provide the error message
+            // Optionally include stack trace if needed (remove in production for security)
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
+            // Include any other relevant error information here
+        };
         res.status(500).json({ error: errorResponse }); // Send the error response
+        res.status(500).json({ error: errorResponse1 }); // Send the error response
+
         console.error(error); // Log the full error for server-side debugging
     }
 };
