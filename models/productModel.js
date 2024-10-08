@@ -1,5 +1,3 @@
-// /models/productModel.js
-
 const { createClient } = require('@supabase/supabase-js');
 
 // Initialize Supabase client
@@ -10,29 +8,72 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const ProductModel = {
     // Function to insert a product
     async insertProduct(productData) {
-        const { data, error } = await supabase
-            .from('products')
-            .insert([productData])
-            .select(); // Ensure returning data
+        try {
+            const { data, error } = await supabase
+                .from('products')
+                .insert([productData])
+                .select(); // Ensure returning data
 
-        if (error) {
-            throw new Error('Error inserting product: ' + error.message);
+            if (error) {
+                console.error('Error inserting product:', error.message);
+                throw new Error('Error inserting product: ' + error.message);
+            }
+
+            return data; // Return inserted product data
+        } catch (error) {
+            throw new Error(error.message);
         }
-
-        return data; // Return inserted product data
     },
 
     // Function to fetch all products
     async fetchAllProducts() {
-        const { data, error } = await supabase
-            .from('products')
-            .select('*'); // Fetch all rows
+        try {
+            const { data, error } = await supabase
+                .from('products')
+                .select('*'); // Fetch all rows
 
-        if (error) {
-            throw new Error('Error fetching products: ' + error.message);
+            if (error) {
+                console.error('Error fetching products:', error.message);
+                throw new Error('Error fetching products: ' + error.message);
+            }
+
+            return data;
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    },
+
+    // Function to fetch a product by ID or ASIN
+    async findByIdOrAsin(id, asin) {
+        let query;
+
+        if (id) {
+            console.log(`Searching by id: ${id}`);
+            query = supabase.from('products').select('*').eq('id', id);
+        } else if (asin) {
+            console.log(`Searching by asin: ${asin}`);
+            query = supabase.from('products').select('*').eq('asin', asin);
         }
 
-        return data;
+        try {
+            const { data, error } = await query;
+
+            if (error) {
+                console.error('Error fetching product:', error.message);
+                throw new Error('Error fetching product');
+            }
+
+            if (!data || data.length === 0) {
+                console.log('No product found');
+                return null; // No product found
+            }
+
+            console.log('Product found:', data[0]);
+            return data[0]; // Return the first match
+        } catch (error) {
+            console.error('Error during product search:', error.message);
+            throw new Error(error.message);
+        }
     }
 };
 
