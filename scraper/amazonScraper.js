@@ -1,27 +1,27 @@
 // /scraper/amazonScraper.js
+
 const chromium = require('chrome-aws-lambda');
 const puppeteer = require('puppeteer-core');
 
 // Function to scrape product data
 const scrapeProductData = async (asin) => {
-    const executablePath = await chromium.executablePath; // Get path for chrome-aws-lambda
-    const browser = await puppeteer.launch({
-        executablePath,
-        headless: true, // Set to true for headless mode (serverless env)
-        args: chromium.args, // Use chrome-aws-lambda args
-        defaultViewport: chromium.defaultViewport, // Use the default viewport for serverless environments
-    });
-    
-    const page = await browser.newPage();
-
-    // Set a custom user-agent to make it look like a real browser
-    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3');
-
-    const url = `https://www.amazon.com/dp/${asin}`;
-
+    let browser;
     try {
-        // Set navigation timeout and load the page
-        await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 }); // 60 seconds timeout
+        const executablePath = await chromium.executablePath;
+        browser = await puppeteer.launch({
+            executablePath,
+            headless: true, // Set to true for headless mode
+            args: chromium.args,
+            defaultViewport: chromium.defaultViewport,
+        });
+
+        const page = await browser.newPage();
+        // Set a custom user-agent to mimic a real browser
+        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3');
+
+        const url = `https://www.amazon.com/dp/${asin}`;
+        // Navigate to the product page
+        await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
 
         // Extract product data
         const productData = await page.evaluate(() => {
@@ -53,12 +53,14 @@ const scrapeProductData = async (asin) => {
             };
         });
 
-        await browser.close();
         return productData; // Return the extracted product data
     } catch (error) {
         console.error('Error navigating to the page or scraping:', error);
-        await browser.close();
         throw new Error('Failed to scrape product data');
+    } finally {
+        if (browser) {
+            await browser.close(); // Close the browser after the task
+        }
     }
 };
 
