@@ -21,7 +21,7 @@ const { scrapeProductData } = require('../scraper/amazonScraper');
         res.status(200).json({ message: 'Product inserted successfully', data: insertedData });
         console.log('Product added successfully:', insertedData);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: error });
         console.log(error);
     }
 };

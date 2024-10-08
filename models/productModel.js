@@ -22,12 +22,12 @@ const ProductModel = {
 
             if (error) {
                 console.error('Error inserting product:', error.message);
-                throw new Error('Error inserting product: ' + error.message);
+                throw new Error('Error inserting product: ' + error);
             }
 
             return data; // Return inserted product data
         } catch (error) {
-            throw new Error(error.message);
+            throw new Error(error);
         }
     },
 
