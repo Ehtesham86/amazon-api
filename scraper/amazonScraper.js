@@ -1,15 +1,23 @@
 const puppeteer = require('puppeteer-core');
 const chromium = require("@sparticuz/chromium");
+const browserExecutablePath = process.env.BROWSER_EXECUTABLE_PATH;
 
 const scrapeProductData = async (asin) => {
+    // const browser = await puppeteer.launch({
+    //     args: chromium.args,
+    //     defaultViewport: chromium.defaultViewport,
+    //     // C:\Program Files\Google\Chrome
+    //     executablePath: 'C:/Program Files/Google/Chrome/Application/Chrome.exe', // Update the path to the Chrome executable
+    //     headless: chromium.headless,
+    //     ignoreHTTPSErrors: true,
+    // });
     const browser = await puppeteer.launch({
         args: chromium.args,
         defaultViewport: chromium.defaultViewport,
-        // C:\Program Files\Google\Chrome
-        executablePath: 'C:/Program Files/Google/Chrome/Application/Chrome.exe', // Update the path to the Chrome executable
+        executablePath: browserExecutablePath,
         headless: chromium.headless,
         ignoreHTTPSErrors: true,
-    });
+    })
     const page = await browser.newPage();
 
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3');
