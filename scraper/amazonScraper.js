@@ -1,7 +1,6 @@
 const puppeteer = require('puppeteer-core');
 const chromium = require("@sparticuz/chromium");
-const browserExecutablePath = process.env.BROWSER_EXECUTABLE_PATH;
-
+ 
 const scrapeProductData = async (asin) => {
     // const browser = await puppeteer.launch({
     //     args: chromium.args,
@@ -14,7 +13,11 @@ const scrapeProductData = async (asin) => {
     const browser = await puppeteer.launch({
         args: chromium.args,
         defaultViewport: chromium.defaultViewport,
-        executablePath: browserExecutablePath,
+        // executablePath: 'C:/Program Files/Google/Chrome/Application/Chrome.exe',
+        executablePath:'/usr/bin/google-chrome',
+
+        args: ['--no-sandbox'],
+
         headless: chromium.headless,
         ignoreHTTPSErrors: true,
     })
